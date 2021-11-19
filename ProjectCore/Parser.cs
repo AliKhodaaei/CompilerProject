@@ -6,8 +6,9 @@ namespace ProjectCore
 {
     public class Parser
     {
-        public static Token lookahead;
-        public Token pl; //Previous Lookahead
+        private static Token lookahead;
+        private Token pl; //Previous Lookahead
+        private readonly Lexer lexer;
         public int X { get; set; }
         public int Y { get; set; }
         public int Ox { get; set; }
@@ -19,10 +20,14 @@ namespace ProjectCore
         public int N { get; set; }
         public int L { get; set; }
         public List<(int x, int y)> Walls { get; set; }
+        public List<string> Output { get; set; }
 
-        public Parser()
+        public Parser(string input)
         {
-            lookahead = null; //TODO
+            Walls = new List<(int x, int y)>();
+            Output = new List<string>();
+            lexer = new Lexer(input);
+            lookahead = lexer.GetToken();
         }
         
         public void A()
@@ -103,7 +108,7 @@ namespace ProjectCore
             Match(Tag.begin);
             X = Ox; Y = Oy;
             int cmd = 1;
-            Console.WriteLine($"({X}, {Y})");
+            Output.Add($"({X},{Y})");
 
             L = 0;
             while (true)
@@ -113,40 +118,40 @@ namespace ProjectCore
                     case Tag.north:
                         Match(Tag.north);
                         if (Walls.Any(wall => wall == (X, Y + 1)) || !CheckBounds(X, Y + 1))
-                            Console.WriteLine($"ERROR int instr {cmd}");
+                            Output.Add($"ERROR int instr {cmd}");
                         else
                         {
-                            Console.WriteLine($"({X},{++Y})");
+                            Output.Add($"({X},{++Y})");
                             L++;
                         }
                         break;
                     case Tag.east:
                         Match(Tag.east);
                         if (Walls.Any(wall => wall == (X + 1, Y)) || !CheckBounds(X + 1, Y))
-                            Console.WriteLine($"ERROR int instr {cmd}");
+                            Output.Add($"ERROR int instr {cmd}");
                         else
                         {
-                            Console.WriteLine($"({++X},{Y})");
+                            Output.Add($"({++X},{Y})");
                             L++;
                         }
                         break;
                     case Tag.west:
                         Match(Tag.west);
                         if (Walls.Any(wall => wall == (X - 1, Y)) || !CheckBounds(X - 1, Y))
-                            Console.WriteLine($"ERROR int instr {cmd}");
+                            Output.Add($"ERROR int instr {cmd}");
                         else
                         {
-                            Console.WriteLine($"({--X},{Y})");
+                            Output.Add($"({--X},{Y})");
                             L++;
                         }
                         break;
                     case Tag.south:
                         Match(Tag.south);
                         if (Walls.Any(wall => wall == (X, Y - 1)) || !CheckBounds(X, Y - 1))
-                            Console.WriteLine($"ERROR int instr {cmd}");
+                            Output.Add($"ERROR int instr {cmd}");
                         else
                         {
-                            Console.WriteLine($"({X},{--Y})");
+                            Output.Add($"({X},{--Y})");
                             L++;
                         }
                         break;
@@ -160,17 +165,18 @@ namespace ProjectCore
         void En()
         {
             Match(Tag.end);
-            Console.WriteLine($"L={L}");
-            var result = Math.Sqrt(Math.Pow(Y - Oy, 2) + Math.Pow(X - Ox, 2));
-            Console.WriteLine($"D={result}");
+            Output.Add($"L={L}");
+            var result = Math.Sqrt(Math.Pow(Y - Oy, 2) + Math.Pow(X - Ox, 2)).ToString("0.0000");
+            Output.Add($"D={result}");
         }
 
         void Match(int t)
         {
+            if (lookahead.tag == Tag.end) return;
             if (lookahead.tag == t)
             {
                 pl = lookahead;
-                lookahead = null; //TODO
+                lookahead = lexer.GetToken();
             }
             else
                 throw new Exception("Syntax Error!");
@@ -178,7 +184,7 @@ namespace ProjectCore
 
         bool CheckBounds(int x, int y)
         {
-            return (x < Ux && x > Lx && y < Uy && y > Ly);
+            return (x <= Ux && x >= Lx && y <= Uy && y >= Ly);
         }
     }
 }

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ProjectCore
+﻿namespace ProjectCore
 {
     public class Token
     {
-        public int tag;
+        public int tag { get; }
 
         public Token(int tag)
         {
@@ -18,12 +12,19 @@ namespace ProjectCore
 
     public class Num : Token
     {
-        public int value;
-        public Num(int tag, int value) : base(tag)
+        public int value { get; }
+        public Num(int value) : base(Tag.num)
         {
             this.value = value;
         }
     }
 
-    //TODO
+    public class Word : Token
+    {
+        public string lexeme { get; }
+        public Word(int tag, string lexeme) : base(tag)
+        {
+            this.lexeme = lexeme;
+        }
+    }
 }
