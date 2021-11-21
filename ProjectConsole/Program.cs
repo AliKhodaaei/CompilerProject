@@ -10,7 +10,7 @@ namespace ProjectConsole
             string input = "";
             do
             {
-                input += Console.ReadLine() + "\r";
+                input += Console.ReadLine() + "\n";
             } while (!input.ToLower().Contains("end"));
 
             Parser parser = new(input);

@@ -22,6 +22,7 @@ namespace ProjectUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Parser parser;
         public MainWindow()
         {
             InitializeComponent();
@@ -42,6 +43,22 @@ namespace ProjectUI
             //    Console.WriteLine(ouput);
             //    Thread.Sleep(1000);
             //}
+        }
+
+        private void BtnRun_Click(object sender, RoutedEventArgs e)
+        {
+            string input = TbInput.Text.Replace("\r\n", "\n");
+            input = string.Concat(input, '\n');
+            parser = new Parser(input);
+            parser.A();
+            var output = parser.Output;
+
+            TbOutput.Text = string.Join("\n", output);
+        }
+
+        private void BtnClear_Click(object sender, RoutedEventArgs e)
+        {
+            TbInput.Text = "//Write your code here...";
         }
     }
 }

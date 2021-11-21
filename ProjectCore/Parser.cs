@@ -33,6 +33,7 @@ namespace ProjectCore
         public void A()
         {
             Match(Tag.Lx);
+            Match(':');
             Match(Tag.num);
             Lx = ((Num)pl).value;
             B();
@@ -41,6 +42,7 @@ namespace ProjectCore
         void B()
         {
             Match(Tag.Ux);
+            Match(':');
             Match(Tag.num);
             Ux = ((Num)pl).value;
             if (Ux <= Lx) throw new Exception("Bounds error");
@@ -50,6 +52,7 @@ namespace ProjectCore
         void C()
         {
             Match(Tag.Ly);
+            Match(':');
             Match(Tag.num);
             Ly = ((Num)pl).value;
             D();
@@ -58,6 +61,7 @@ namespace ProjectCore
         void D()
         {
             Match(Tag.Uy);
+            Match(':');
             Match(Tag.num);
             Uy = ((Num)pl).value;
             if (Uy <= Ly) throw new Exception("Bounds error");
@@ -67,6 +71,7 @@ namespace ProjectCore
         void E()
         {
             Match(Tag.Ox);
+            Match(':');
             Match(Tag.num);
             Ox = ((Num)pl).value;
             F();
@@ -74,6 +79,7 @@ namespace ProjectCore
         void F()
         {
             Match(Tag.Oy);
+            Match(':');
             Match(Tag.num);
             Oy = ((Num)pl).value;
             if (!CheckBounds(Ox, Oy)) throw new Exception("Bounds error");
@@ -83,6 +89,7 @@ namespace ProjectCore
         void G()
         {
             Match(Tag.N);
+            Match(':');
             Match(Tag.num);
             N = ((Num)pl).value;
             H();
