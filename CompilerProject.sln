@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectCore", "ProjectCore\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectConsole", "ProjectConsole\ProjectConsole.csproj", "{8931DCA8-9E23-4F35-BC49-070AE483F6DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectUI", "ProjectUI\ProjectUI.csproj", "{A6929FDA-5195-4FFE-B3DD-39B2690DC540}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectUI", "ProjectUI\ProjectUI.csproj", "{A6929FDA-5195-4FFE-B3DD-39B2690DC540}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

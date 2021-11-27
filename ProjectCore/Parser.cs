@@ -186,7 +186,7 @@ namespace ProjectCore
                 lookahead = lexer.GetToken();
             }
             else
-                throw new Exception("Syntax Error!");
+                throw new Exception($"Syntax Error in line {lexer.line}");
         }
 
         bool CheckBounds(int x, int y)

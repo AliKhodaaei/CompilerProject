@@ -25,7 +25,6 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-
                 <TextBox x:Name="TbInput" Grid.Row="0"
                          Text="//Write your code here..."
                          AcceptsReturn="True"
@@ -65,22 +64,22 @@
                 </Grid>
             </Grid>
             <Grid Grid.Row="1">
-                <TextBox x:Name="TbOutput"
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <TextBlock x:Name="TbOutput"
                            Text="Output will be here..."
                            Background="#1a1818"
                            Foreground="White"
                            FontSize="16"
                            FontFamily="Consolas"
-                           IsReadOnly="True"
-                           VerticalScrollBarVisibility="Auto"
                            />
+                </ScrollViewer>
             </Grid>
         </Grid>
 
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="6*"/>
+                <RowDefinition Height="9*"/>
                 <RowDefinition Height="0.5*"/>
             </Grid.RowDefinitions>
             <Label x:Name="LblLocation"
@@ -88,10 +87,37 @@
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center"
                    FontWeight="Bold"
-                   FontSize="16"/>
+                   FontSize="22"/>
             
-            <Grid x:Name="Board" Grid.Row="1" ShowGridLines="True">
-                
+            <Grid x:Name="Board" Grid.Row="1" ShowGridLines="True"
+                  Width="450" Height="450">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Path x:Name="Road" Data="M 225 225"
+                      StrokeThickness="15"
+                      StrokeLineJoin="Round"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Triangle"
+                      Grid.ColumnSpan="2147483647"
+                      Grid.RowSpan="2147483647">
+                    <Path.Stroke>
+                        <LinearGradientBrush>
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStop Offset="0.75" Color="DarkOrange"/>
+                                <GradientStop Offset="0.5" Color="Crimson"/>
+                                <GradientStop Offset="0.25" Color="DarkMagenta"/>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Stroke>
+                </Path>
+
+                <Image x:Name="Zero" Source="pack://application:,,,/00.png" Visibility="Hidden"/>
+                <Image x:Name="Bot" Source="pack://application:,,,/bot.png" Visibility="Hidden"/>
             </Grid>
 
             <StackPanel Grid.Row="2" Orientation="Horizontal"

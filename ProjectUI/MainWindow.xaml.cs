@@ -23,37 +23,28 @@ namespace ProjectUI
     public partial class MainWindow : Window
     {
         private Parser parser;
+        private BoardManager manager;
         public MainWindow()
         {
             InitializeComponent();
-            //MessageBox.Show("Test", "Test", MessageBoxButton.OK, MessageBoxImage.Error);
-            //Parser parser = new("");
-
-            //try
-            //{
-            //    parser.A();
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show($"Exception: {ex.Message}");
-            //}
-
-            //foreach (var ouput in parser.Output)
-            //{
-            //    Console.WriteLine(ouput);
-            //    Thread.Sleep(1000);
-            //}
         }
 
-        private void BtnRun_Click(object sender, RoutedEventArgs e)
+        private async void BtnRun_Click(object sender, RoutedEventArgs e)
         {
             string input = TbInput.Text.Replace("\r\n", "\n");
             input = string.Concat(input, '\n');
             parser = new Parser(input);
-            parser.A();
-            var output = parser.Output;
-
-            TbOutput.Text = string.Join("\n", output);
+            try
+            {
+                parser.A();
+                manager = new BoardManager(Board, Bot, Zero, parser, LblLocation, TbOutput, Road);
+                manager.InitializeBoard();
+                await manager.Move(parser.Output);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void BtnClear_Click(object sender, RoutedEventArgs e)
