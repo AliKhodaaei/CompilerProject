@@ -27,24 +27,33 @@ namespace ProjectUI
         public MainWindow()
         {
             InitializeComponent();
+            manager = new BoardManager(Board, Bot, Zero, LblLocation, TbOutput, Road, Dispatcher);
         }
 
         private async void BtnRun_Click(object sender, RoutedEventArgs e)
         {
+            BtnRun.IsEnabled = false;
             string input = TbInput.Text.Replace("\r\n", "\n");
             input = string.Concat(input, '\n');
             parser = new Parser(input);
             try
             {
                 parser.A();
-                manager = new BoardManager(Board, Bot, Zero, parser, LblLocation, TbOutput, Road);
+                LblStatus.Content = "Running...";
+                LblStatus.Background = new SolidColorBrush(Colors.DodgerBlue);
+                manager.SetParser(parser);
                 manager.InitializeBoard();
                 await manager.Move(parser.Output);
+                LblStatus.Content = "Finished!";
+                LblStatus.Background = new SolidColorBrush(Colors.ForestGreen);
             }
             catch (Exception ex)
             {
+                LblStatus.Content = "Error: " + ex.Message;
+                LblStatus.Background = new SolidColorBrush(Colors.Red);
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            BtnRun.IsEnabled = true;
         }
 
         private void BtnClear_Click(object sender, RoutedEventArgs e)

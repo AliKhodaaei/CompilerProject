@@ -39,7 +39,7 @@
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <!--<ColumnDefinition Width="*"/>-->
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Button x:Name="BtnRun" Content="Run"
@@ -48,16 +48,16 @@
                         Background="ForestGreen"
                         Foreground="White"
                         FontSize="15" Click="BtnRun_Click"
-                        />
-                    <Button x:Name="BtnRunStep" Content="Step by Step Run"
+                            />
+                    <!--<Button x:Name="BtnRunStep" Content="Step by Step Run"
                         Grid.Column="1"
                             Foreground="White"
                             Background="DarkOrchid"
                             FontSize="15"
-                        />
+                        />-->
                     <Button x:Name="BtnClear" Content="Clear"
                         Grid.Column="0"
-                        Background="Red"
+                        Background="MediumVioletRed"
                         Foreground="White"
                         FontSize="16" Click="BtnClear_Click"
                         />
@@ -120,12 +120,14 @@
                 <Image x:Name="Bot" Source="pack://application:,,,/bot.png" Visibility="Hidden"/>
             </Grid>
 
-            <StackPanel Grid.Row="2" Orientation="Horizontal"
-                        Background="DimGray">
-                <Label Content="Code compiled succefully" VerticalAlignment="Center"
-                       FontWeight="Bold"/>
-            </StackPanel>
+            <Grid Grid.Row="2" Background="Gainsboro">
+                <Label x:Name="LblStatus" Content="Ready"
+                       VerticalAlignment="Center"
+                       FontWeight="Bold"
+                       />
+            </Grid>
             
+
         </Grid>
     </Grid>
 </Window>

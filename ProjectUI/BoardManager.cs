@@ -26,20 +26,26 @@ namespace ProjectUI
         private Path _road;
         private Point CurrentLocation;
         private Point CLP;
+        private Dispatcher _dispatcher;
+        private List<Rectangle> _walls;
 
-        public BoardManager(Grid board, Image bot, Image zero, Parser parser, Label lblLocation, TextBlock tbOutput, Path path)
+        public BoardManager(Grid board, Image bot, Image zero, Label lblLocation, TextBlock tbOutput, Path path, Dispatcher dispatcher)
         {
-            _parser = parser;
+            _walls = new List<Rectangle>();
             _board = board;
             _bot = bot;
             _zero = zero;
             _lblLocation = lblLocation;
             _tbOutput = tbOutput;
             _road = path;
-            CurrentLocation = new Point(_parser.Ox, _parser.Oy);
+            _dispatcher = dispatcher;
         }
 
-        public object OpacityProperty { get; private set; }
+        public void SetParser(Parser parser)
+        {
+            _parser = parser;
+            CurrentLocation = new Point(_parser.Ox, _parser.Oy);
+        }
 
         public void InitializeBoard()
         {
@@ -57,14 +63,15 @@ namespace ProjectUI
             Grid.SetColumn(_zero, (max - 1) / 2);
             Grid.SetRow(_bot, (max - 1) / 2 - _parser.Oy);
             Grid.SetColumn(_bot, (max - 1) / 2 + _parser.Ox);
-            _road.StrokeThickness = (_boardSize / max) / 2.5;
-            _road.Data = Geometry.Parse($"M 225 225");
+            _road.StrokeThickness = (_boardSize / max) / 3;
             PlaceWalls(max);
         }
 
         public async Task Move(List<string> output)
         {
             _tbOutput.Text = "";
+            await _dispatcher.BeginInvoke(new Action(() => UpdateRoad()), DispatcherPriority.ContextIdle, null);
+            _road.Data = Geometry.Parse($"M {CLP.X} {CLP.Y}");
             foreach (var o in output)
             {
                 if (o.Contains("("))
@@ -78,6 +85,7 @@ namespace ProjectUI
                     _lblLocation.Content = $"Current Location: ({p})";
                     _tbOutput.Inlines.Add(new Run(o + "\n") { Foreground = new SolidColorBrush(Colors.LightGreen) });
                     Fade(_bot, 0);
+                    await _dispatcher.BeginInvoke(new Action(() => UpdateRoad()), DispatcherPriority.ContextIdle, null);
                     await Task.Delay(1000);
                 }
                 else if (o.Contains("ERROR"))
@@ -91,6 +99,10 @@ namespace ProjectUI
 
         private void PlaceWalls(int max)
         {
+            foreach (var w in _walls)
+                _board.Children.Remove(w);
+            _walls.Clear();
+
             Point p = new((max - 1) / 2, (max - 1) / 2);
             foreach (var (x, y) in _parser.Walls)
             {
@@ -98,21 +110,21 @@ namespace ProjectUI
                 Grid.SetRow(w, Convert.ToInt32(p.Y - y));
                 Grid.SetColumn(w, Convert.ToInt32(p.X + x));
                 _board.Children.Add(w);
+                _walls.Add(w);
             }
         }
 
         private void Fade(Image bot, int type)
         {
-            var fade = new DoubleAnimation(type, 1 - type, TimeSpan.FromMilliseconds(500));
+            var fade = new DoubleAnimation(type, 1 - type, TimeSpan.FromMilliseconds(300));
             Storyboard.SetTarget(fade, bot);
-            Storyboard.SetTargetProperty(fade, new PropertyPath(Image.OpacityProperty));
+            Storyboard.SetTargetProperty(fade, new PropertyPath(UIElement.OpacityProperty));
             var sb = new Storyboard();
             sb.Children.Add(fade);
-            sb.Completed += UpdateRoad;
             sb.Begin();
         }
 
-        private void UpdateRoad(object sender, EventArgs e)
+        private void UpdateRoad()
         {
             CLP = _bot.TranslatePoint(new Point(_bot.ActualWidth / 2, _bot.ActualHeight / 2), _board);
             _road.Data = Geometry.Parse($"{_road.Data} L {CLP.X},{CLP.Y}");
