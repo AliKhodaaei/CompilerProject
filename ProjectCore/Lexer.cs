@@ -34,75 +34,84 @@ namespace ProjectCore
 
         public Token GetToken()
         {
-            negativeFlag = false;
-            for (; ; peek = input[C++])
+            try
             {
-                if (peek == ' ' || peek == '\t') continue;
-                else if (peek == '\n') line++;
-                else if (peek == '/')
+                negativeFlag = false;
+                for (; ; peek = input[C++])
                 {
-                    peek = input[C++];
-                    if (peek == '/')
+                    if (peek == ' ' || peek == '\t') continue;
+                    else if (peek == '\n') line++;
+                    else if (peek == '/')
+                    {
+                        peek = input[C++];
+                        if (peek == '/')
+                        {
+                            do
+                            {
+                                peek = input[C++];
+                            } while (peek != '\n');
+                            line++;
+                        }
+                        else
+                            throw new Exception($"Syntax error in line {line}");
+                    }
+                    else if (peek == '{')
                     {
                         do
                         {
                             peek = input[C++];
-                        } while (peek != '\n');
-                        line++;
+                            if (peek == '\n') line++;
+                        } while (peek != '}');
                     }
-                    else
-                        throw new Exception($"Syntax error in line {line}");
+                    else break;
+
+                    if (C >= input.Length) break;
                 }
-                else if (peek == '{')
+
+                if (peek == 45)
                 {
+                    negativeFlag = true;
+                    peek = input[C++];
+                }
+
+                if (char.IsDigit(peek))
+                {
+                    int v = 0;
                     do
                     {
+                        v = v * 10 + (peek - 48);
                         peek = input[C++];
-                        if (peek == '\n') line++;
-                    } while (peek != '}');
+                    } while (char.IsDigit(peek));
+                    return new Num(negativeFlag ? -v : v);
                 }
-                else break;
-            }
 
-            if (peek == 45)
-            {
-                negativeFlag = true;
-                peek = input[C++];
-            }
-
-            if (char.IsDigit(peek))
-            {
-                int v = 0;
-                do
+                if (char.IsLetter(peek))
                 {
-                    v = v * 10 + (peek - 48);
-                    peek = input[C++];
-                } while (char.IsDigit(peek));
-                return new Num(negativeFlag ? -v : v);
-            }
+                    StringBuilder sb = new();
+                    do
+                    {
+                        sb.Append(peek);
+                        peek = input[C++];
+                    } while (char.IsLetter(peek));
+                    string s = sb.ToString().ToLower();
+                    if (symbolTable.Contains(s))
+                        return (Word)symbolTable[s];
+                    throw new Exception($"Syntax error in line {line}");
+                }
 
-            if (char.IsLetter(peek))
-            {
-                StringBuilder sb = new();
-                do
+                if (peek == ':')
                 {
-                    sb.Append(peek);
-                    peek = input[C++];
-                } while (char.IsLetter(peek));
-                string s = sb.ToString().ToLower();
-                if (symbolTable.Contains(s))
-                    return (Word)symbolTable[s];
+                    Token t = new(peek);
+                    peek = ' ';
+                    return t;
+                }
+
                 throw new Exception($"Syntax error in line {line}");
             }
-
-            if (peek == ':')
+            catch (Exception)
             {
-                Token t = new(peek);
-                peek = ' ';
-                return t;
+                return null;
             }
-
-            throw new Exception($"Syntax error in line {line}");
         }
     }
 }

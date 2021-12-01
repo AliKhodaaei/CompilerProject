@@ -28,6 +28,7 @@ namespace ProjectCore
             Output = new List<string>();
             lexer = new Lexer(input);
             lookahead = lexer.GetToken();
+            if (lookahead == null) throw new Exception($"Syntax error in line {lexer.line}");
         }
         
         public void A()
@@ -125,7 +126,7 @@ namespace ProjectCore
                     case Tag.north:
                         Match(Tag.north);
                         if (Walls.Any(wall => wall == (X, Y + 1)) || !CheckBounds(X, Y + 1))
-                            Output.Add($"ERROR int instr {cmd}");
+                            Output.Add($"ERROR in instr {cmd}");
                         else
                         {
                             Output.Add($"({X},{++Y})");
@@ -135,7 +136,7 @@ namespace ProjectCore
                     case Tag.east:
                         Match(Tag.east);
                         if (Walls.Any(wall => wall == (X + 1, Y)) || !CheckBounds(X + 1, Y))
-                            Output.Add($"ERROR int instr {cmd}");
+                            Output.Add($"ERROR in instr {cmd}");
                         else
                         {
                             Output.Add($"({++X},{Y})");
@@ -145,7 +146,7 @@ namespace ProjectCore
                     case Tag.west:
                         Match(Tag.west);
                         if (Walls.Any(wall => wall == (X - 1, Y)) || !CheckBounds(X - 1, Y))
-                            Output.Add($"ERROR int instr {cmd}");
+                            Output.Add($"ERROR in instr {cmd}");
                         else
                         {
                             Output.Add($"({--X},{Y})");
@@ -155,7 +156,7 @@ namespace ProjectCore
                     case Tag.south:
                         Match(Tag.south);
                         if (Walls.Any(wall => wall == (X, Y - 1)) || !CheckBounds(X, Y - 1))
-                            Output.Add($"ERROR int instr {cmd}");
+                            Output.Add($"ERROR in instr {cmd}");
                         else
                         {
                             Output.Add($"({X},{--Y})");
@@ -173,13 +174,12 @@ namespace ProjectCore
         {
             Match(Tag.end);
             Output.Add($"L={L}");
-            var result = Math.Sqrt(Math.Pow(Y - Oy, 2) + Math.Pow(X - Ox, 2)).ToString("0.0000");
-            Output.Add($"D={result}");
+            Output.Add($"D={Math.Sqrt(Math.Pow(Y - Oy, 2) + Math.Pow(X - Ox, 2)):0.0000}");
         }
 
         void Match(int t)
         {
-            if (lookahead.tag == Tag.end) return;
+            if (lookahead == null) throw new Exception($"Syntax error in line {lexer.line}");
             if (lookahead.tag == t)
             {
                 pl = lookahead;

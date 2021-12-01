@@ -13,14 +13,22 @@ namespace ProjectConsole
                 input += Console.ReadLine() + "\n";
             } while (!input.ToLower().Contains("end"));
 
-            Parser parser = new(input);
-            parser.A();
-            var output = parser.Output;
-            foreach (var line in output)
+            Parser parser = null;
+            try
             {
-                Console.ForegroundColor = line.Contains("ERROR") ? ConsoleColor.Red : ConsoleColor.Green;
-                Console.WriteLine(line);
-                Console.ResetColor();
+                parser = new(input);
+                parser.A();
+                var output = parser.Output;
+                foreach (var line in output)
+                {
+                    Console.ForegroundColor = line.Contains("ERROR") ? ConsoleColor.Red : ConsoleColor.Green;
+                    Console.WriteLine(line);
+                    Console.ResetColor();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
     }

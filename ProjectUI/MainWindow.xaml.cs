@@ -23,27 +23,27 @@ namespace ProjectUI
     public partial class MainWindow : Window
     {
         private Parser parser;
-        private BoardManager manager;
+        private readonly List<Rectangle> _walls;
+
         public MainWindow()
         {
             InitializeComponent();
-            manager = new BoardManager(Board, Bot, Zero, LblLocation, TbOutput, Road, Dispatcher);
+            _walls = new List<Rectangle>();
         }
 
         private async void BtnRun_Click(object sender, RoutedEventArgs e)
         {
             BtnRun.IsEnabled = false;
             string input = TbInput.Text.Replace("\r\n", "\n");
-            input = string.Concat(input, '\n');
-            parser = new Parser(input);
+            input = string.Concat(input, input == "" ? '\0' : '\n');
             try
             {
+                parser = new Parser(input);
                 parser.A();
                 LblStatus.Content = "Running...";
                 LblStatus.Background = new SolidColorBrush(Colors.DodgerBlue);
-                manager.SetParser(parser);
-                manager.InitializeBoard();
-                await manager.Move(parser.Output);
+                InitializeBoard();
+                await Move(parser.Output);
                 LblStatus.Content = "Finished!";
                 LblStatus.Background = new SolidColorBrush(Colors.ForestGreen);
             }
@@ -51,7 +51,6 @@ namespace ProjectUI
             {
                 LblStatus.Content = "Error: " + ex.Message;
                 LblStatus.Background = new SolidColorBrush(Colors.Red);
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             BtnRun.IsEnabled = true;
         }
