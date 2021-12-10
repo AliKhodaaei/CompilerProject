@@ -13,10 +13,9 @@ namespace ProjectConsole
                 input += Console.ReadLine() + "\n";
             } while (!input.ToLower().Contains("end"));
 
-            Parser parser = null;
             try
             {
-                parser = new(input);
+                Parser parser = new(input);
                 parser.A();
                 var output = parser.Output;
                 foreach (var line in output)

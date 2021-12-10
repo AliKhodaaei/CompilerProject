@@ -1,21 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using ProjectCore;
 
 namespace ProjectUI
 {
@@ -27,7 +20,7 @@ namespace ProjectUI
 
         public void InitializeBoard()
         {
-            var max = new List<int>() { Math.Abs(parser.Lx), Math.Abs(parser.Ux), Math.Abs(parser.Ly), Math.Abs(parser.Uy) }.Max() * 2 + 1;
+            var max = new[] { parser.Lx, parser.Ux, parser.Ly, parser.Uy }.Select(Math.Abs).Max() * 2 + 1;
             Board.RowDefinitions.Clear();
             Board.ColumnDefinitions.Clear();
             for (int i = 0; i < max; i++)
@@ -51,9 +44,16 @@ namespace ProjectUI
             TbOutput.Text = "";
             await Dispatcher.BeginInvoke(new Action(() => UpdateRoad()), DispatcherPriority.ContextIdle, null);
             Road.Data = Geometry.Parse($"M {CLP.X} {CLP.Y}");
-            foreach (var o in output)
+            for (int i = 0; i < output.Count - 2; i++)
             {
-                if (o.Contains("("))
+                string o = output[i];
+                if (o.Contains("ERROR"))
+                {
+                    WriteOutput(o, Colors.IndianRed);
+                    Fade(Bot, 0);
+                    await Task.Delay(1000);
+                }
+                else
                 {
                     Point p = Point.Parse(o.Replace("(", "").Replace(")", ""));
                     int dx = Convert.ToInt32(p.X - CurrentLocation.X);
@@ -62,18 +62,19 @@ namespace ProjectUI
                     Grid.SetRow(Bot, Grid.GetRow(Bot) - dy);
                     CurrentLocation = p;
                     LblLocation.Content = $"Current Location: ({p})";
-                    TbOutput.Inlines.Add(new Run(o + "\n") { Foreground = new SolidColorBrush(Colors.LightGreen) });
                     Fade(Bot, 0);
                     await Dispatcher.BeginInvoke(new Action(() => UpdateRoad()), DispatcherPriority.ContextIdle, null);
+                    WriteOutput(o, Colors.LightGreen);
                     await Task.Delay(1000);
                 }
-                else if (o.Contains("ERROR"))
-                {
-                    TbOutput.Inlines.Add(new Run(o + "\n") { Foreground = new SolidColorBrush(Colors.IndianRed) });
-                }
             }
-            TbOutput.Inlines.Add(new Run(output[^2] + "\n") { Foreground = new SolidColorBrush(Colors.Orange) });
-            TbOutput.Inlines.Add(new Run(output[^1] + "\n") { Foreground = new SolidColorBrush(Colors.Orange) });
+            WriteOutput(output[^2] + "\n" + output[^1], Colors.Orange);
+        }
+
+        private void WriteOutput(string text, Color color)
+        {
+            TbOutput.Inlines.Add(new Run(text + "\n") { Foreground = new SolidColorBrush(color) });
+            ScrollView.ScrollToEnd();
         }
 
         private void PlaceWalls(int max)
@@ -97,7 +98,7 @@ namespace ProjectUI
         {
             var fade = new DoubleAnimation(type, 1 - type, TimeSpan.FromMilliseconds(300));
             Storyboard.SetTarget(fade, bot);
-            Storyboard.SetTargetProperty(fade, new PropertyPath(UIElement.OpacityProperty));
+            Storyboard.SetTargetProperty(fade, new PropertyPath(OpacityProperty));
             var sb = new Storyboard();
             sb.Children.Add(fade);
             sb.Begin();

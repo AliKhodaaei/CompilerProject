@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ProjectCore
 {
@@ -28,9 +28,8 @@ namespace ProjectCore
             Output = new List<string>();
             lexer = new Lexer(input);
             lookahead = lexer.GetToken();
-            if (lookahead == null) throw new Exception($"Syntax error in line {lexer.line}");
         }
-        
+
         public void A()
         {
             Match(Tag.Lx);
@@ -46,7 +45,7 @@ namespace ProjectCore
             Match(':');
             Match(Tag.num);
             Ux = ((Num)pl).value;
-            if (Ux <= Lx) throw new Exception("Bounds error");
+            if (Ux <= Lx) throw new Exception("Logical error: Ux must be greater than Lx");
             C();
         }
 
@@ -65,7 +64,7 @@ namespace ProjectCore
             Match(':');
             Match(Tag.num);
             Uy = ((Num)pl).value;
-            if (Uy <= Ly) throw new Exception("Bounds error");
+            if (Uy <= Ly) throw new Exception("Logical error: Uy must be greater than Ly");
             E();
         }
 
@@ -83,7 +82,7 @@ namespace ProjectCore
             Match(':');
             Match(Tag.num);
             Oy = ((Num)pl).value;
-            if (!CheckBounds(Ox, Oy)) throw new Exception("Bounds error");
+            if (!CheckBounds(Ox, Oy)) throw new Exception("Logical error: Start Point (Ox, Oy) is out of range");
             G();
         }
 
@@ -179,7 +178,6 @@ namespace ProjectCore
 
         void Match(int t)
         {
-            if (lookahead == null) throw new Exception($"Syntax error in line {lexer.line}");
             if (lookahead.tag == t)
             {
                 pl = lookahead;
@@ -189,9 +187,6 @@ namespace ProjectCore
                 throw new Exception($"Syntax Error in line {lexer.line}");
         }
 
-        bool CheckBounds(int x, int y)
-        {
-            return (x <= Ux && x >= Lx && y <= Uy && y >= Ly);
-        }
+        bool CheckBounds(int x, int y) => x <= Ux && x >= Lx && y <= Uy && y >= Ly;
     }
 }

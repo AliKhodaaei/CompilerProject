@@ -35,7 +35,6 @@ namespace ProjectUI
         {
             BtnRun.IsEnabled = false;
             string input = TbInput.Text.Replace("\r\n", "\n");
-            input = string.Concat(input, input == "" ? '\0' : '\n');
             try
             {
                 parser = new Parser(input);

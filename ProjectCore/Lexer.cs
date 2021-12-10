@@ -6,7 +6,7 @@ namespace ProjectCore
 {
     public class Lexer
     {
-        public int line = 1, C = 0;
+        public int line = 1, C = 0; //C : Pointer for current character to read from input
         private char peek = ' ';
         private bool negativeFlag = false;
         private readonly Hashtable symbolTable = new();
@@ -32,86 +32,81 @@ namespace ProjectCore
 
         void Reserve(Word t) => symbolTable.Add(t.lexeme, t);
 
+        private char GetNextChar()
+        {
+            if (input.Length == 0 || C >= input.Length) //if input is empty, set peek to null character, or end of input reached
+                return '\0';
+            return input[C++];
+        }
+
         public Token GetToken()
         {
-            try
+            negativeFlag = false;
+            for (; ; peek = GetNextChar())
             {
-                negativeFlag = false;
-                for (; ; peek = input[C++])
+                if (peek == ' ' || peek == '\t') continue;
+                else if (peek == '\n') line++;
+                else if (peek == '/')
                 {
-                    if (peek == ' ' || peek == '\t') continue;
-                    else if (peek == '\n') line++;
-                    else if (peek == '/')
-                    {
-                        peek = input[C++];
-                        if (peek == '/')
-                        {
-                            do
-                            {
-                                peek = input[C++];
-                            } while (peek != '\n');
-                            line++;
-                        }
-                        else
-                            throw new Exception($"Syntax error in line {line}");
-                    }
-                    else if (peek == '{')
+                    peek = GetNextChar();
+                    if (peek == '/')
                     {
                         do
                         {
-                            peek = input[C++];
-                            if (peek == '\n') line++;
-                        } while (peek != '}');
+                            peek = GetNextChar();
+                            if (peek == '\0') break; //input is a linear comment only!
+                        } while (peek != '\n');
+                        if (peek == '\n') line++;
                     }
-                    else break;
-
-                    if (C >= input.Length) break;
+                    else
+                        throw new Exception($"Syntax error in line {line}");
                 }
-
-                if (peek == 45)
+                else if (peek == '{')
                 {
-                    negativeFlag = true;
-                    peek = input[C++];
-                }
-
-                if (char.IsDigit(peek))
-                {
-                    int v = 0;
                     do
                     {
-                        v = v * 10 + (peek - 48);
-                        peek = input[C++];
-                    } while (char.IsDigit(peek));
-                    return new Num(negativeFlag ? -v : v);
+                        peek = GetNextChar();
+                        if (peek == '\0') break; //input is a block comment only!
+                        if (peek == '\n') line++;
+                    } while (peek != '}');
                 }
-
-                if (char.IsLetter(peek))
-                {
-                    StringBuilder sb = new();
-                    do
-                    {
-                        sb.Append(peek);
-                        peek = input[C++];
-                    } while (char.IsLetter(peek));
-                    string s = sb.ToString().ToLower();
-                    if (symbolTable.Contains(s))
-                        return (Word)symbolTable[s];
-                    throw new Exception($"Syntax error in line {line}");
-                }
-
-                if (peek == ':')
-                {
-                    Token t = new(peek);
-                    peek = ' ';
-                    return t;
-                }
-
-                throw new Exception($"Syntax error in line {line}");
+                else break;
             }
-            catch (Exception)
+
+            if (peek == 45)
             {
-                return null;
+                negativeFlag = true;
+                peek = GetNextChar();
             }
+
+            if (char.IsDigit(peek))
+            {
+                int v = 0;
+                do
+                {
+                    v = v * 10 + (peek - 48);
+                    peek = GetNextChar();
+                } while (char.IsDigit(peek));
+                return new Num(negativeFlag ? -v : v);
+            }
+
+            if (char.IsLetter(peek))
+            {
+                StringBuilder sb = new();
+                do
+                {
+                    sb.Append(peek);
+                    peek = GetNextChar();
+                } while (char.IsLetter(peek));
+                string s = sb.ToString().ToLower();
+                if (symbolTable.Contains(s))
+                    return (Word)symbolTable[s];
+                return new Token(peek);
+            }
+
+            Token t = new(peek);
+            peek = ' ';
+            return t;
         }
     }
 }

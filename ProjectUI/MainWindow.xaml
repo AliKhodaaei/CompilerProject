@@ -47,7 +47,7 @@
                         Background="ForestGreen"
                         Foreground="White"
                         FontSize="15" Click="BtnRun_Click"
-                            />
+                        />
                     <Button x:Name="BtnClear" Content="Clear"
                         Grid.Column="0"
                         Background="MediumVioletRed"
@@ -57,7 +57,8 @@
                 </Grid>
             </Grid>
             <Grid Grid.Row="1">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ScrollViewer x:Name="ScrollView"
+                    VerticalScrollBarVisibility="Auto">
                     <TextBlock x:Name="TbOutput"
                            Text="Output will be here..."
                            Background="#1a1818"
@@ -80,7 +81,8 @@
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center"
                    FontWeight="Bold"
-                   FontSize="22"/>
+                   FontSize="22"
+                   Foreground="MediumSeaGreen"/>
             
             <Grid x:Name="Board" Grid.Row="1" ShowGridLines="True"
                   Width="450" Height="450">
