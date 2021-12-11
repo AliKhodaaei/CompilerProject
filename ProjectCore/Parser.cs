@@ -104,6 +104,8 @@ namespace ProjectCore
                 x = ((Num)pl).value;
                 Match(Tag.num);
                 y = ((Num)pl).value;
+                if (!CheckBounds(x, y))
+                    throw new Exception($"Logical error: wall ({x},{y}) is out of range");
                 Walls.Add((x, y));
             }
             S();
