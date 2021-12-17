@@ -15,18 +15,71 @@
 
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="1.5*"/>
+                <RowDefinition Height="0.3*"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="0.9*"/>
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="1.2*"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Row="0" Grid.Column="0"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+                    <Label Content="Lx , Ux: " FontWeight="Bold"/>
+                    <TextBox x:Name="ILx" MinWidth="30" HorizontalContentAlignment="Center"/>
+                    <Label Content="," FontWeight="Bold"/>
+                    <TextBox x:Name="IUx" MinWidth="30" HorizontalContentAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="0"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+                    <Label Content="Ly , Uy: " FontWeight="Bold"/>
+                    <TextBox x:Name="ILy" MinWidth="30" HorizontalContentAlignment="Center"/>
+                    <Label Content="," FontWeight="Bold"/>
+                    <TextBox x:Name="IUy" MinWidth="30" HorizontalContentAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Grid.Row="0" Grid.Column="1"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+                    <Label Content="Ox , Oy: " FontWeight="Bold"/>
+                    <TextBox x:Name="IOx" MinWidth="30" HorizontalContentAlignment="Center"/>
+                    <Label Content="," FontWeight="Bold"/>
+                    <TextBox x:Name="IOy" MinWidth="30" HorizontalContentAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="1"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+                    <Label Content="N: " FontWeight="Bold"/>
+                    <TextBox x:Name="IN" MinWidth="30" TextChanged="IN_TextChanged" 
+                             HorizontalContentAlignment="Center"/>
+                </StackPanel>
+                <ScrollViewer Grid.Row="0" Grid.Column="2" 
+                              Grid.RowSpan="2" x:Name="ScWalls" Background="LightGray">
+                    <StackPanel x:Name="LstWalls" Margin="5" HorizontalAlignment="Center"/>
+                </ScrollViewer>
+                
+            </Grid>
+            <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="10*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
                 <TextBox x:Name="TbInput" Grid.Row="0"
-                         Text="//Write your code here..."
+                         Text="//Write your commands here..."
                          AcceptsReturn="True"
                          AcceptsTab="True"
                          FontSize="16"
@@ -43,20 +96,21 @@
                     </Grid.ColumnDefinitions>
                     <Button x:Name="BtnRun" Content="Run"
                         Grid.Column="2"
-                        FontWeight="Bold"
-                        Background="ForestGreen"
-                        Foreground="White"
-                        FontSize="15" Click="BtnRun_Click"
+                        FontWeight="DemiBold"
+                        Background="LightGreen"
+                        Foreground="Black"
+                        FontSize="14" Click="BtnRun_Click"
                         />
                     <Button x:Name="BtnClear" Content="Clear"
                         Grid.Column="0"
-                        Background="MediumVioletRed"
-                        Foreground="White"
-                        FontSize="16" Click="BtnClear_Click"
+                        Background="NavajoWhite"
+                        Foreground="Black"
+                        FontWeight="DemiBold"
+                        FontSize="14" Click="BtnClear_Click"
                         />
                 </Grid>
             </Grid>
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="2">
                 <ScrollViewer x:Name="ScrollView"
                     VerticalScrollBarVisibility="Auto">
                     <TextBlock x:Name="TbOutput"
@@ -83,7 +137,7 @@
                    FontWeight="Bold"
                    FontSize="22"
                    Foreground="MediumSeaGreen"/>
-            
+
             <Grid x:Name="Board" Grid.Row="1" ShowGridLines="True"
                   Width="450" Height="450">
                 <Grid.ColumnDefinitions>

@@ -20,7 +20,7 @@ namespace ProjectUI
 
         public void InitializeBoard()
         {
-            var max = new[] { parser.Lx, parser.Ux, parser.Ly, parser.Uy }.Select(Math.Abs).Max() * 2 + 1;
+            var max = new[] { dto.Lx, dto.Ux, dto.Ly, dto.Uy }.Select(Math.Abs).Max() * 2 + 1;
             Board.RowDefinitions.Clear();
             Board.ColumnDefinitions.Clear();
             for (int i = 0; i < max; i++)
@@ -32,10 +32,10 @@ namespace ProjectUI
             Zero.Visibility = Visibility.Visible;
             Grid.SetRow(Zero, (max - 1) / 2);
             Grid.SetColumn(Zero, (max - 1) / 2);
-            Grid.SetRow(Bot, (max - 1) / 2 - parser.Oy);
-            Grid.SetColumn(Bot, (max - 1) / 2 + parser.Ox);
+            Grid.SetRow(Bot, (max - 1) / 2 - dto.Oy);
+            Grid.SetColumn(Bot, (max - 1) / 2 + dto.Ox);
             Road.StrokeThickness = (BoardSize / max) / 3;
-            CurrentLocation = new Point(parser.Ox, parser.Oy);
+            CurrentLocation = new Point(dto.Ox, dto.Oy);
             PlaceWalls(max);
         }
 
@@ -84,7 +84,7 @@ namespace ProjectUI
             _walls.Clear();
 
             Point p = new((max - 1) / 2, (max - 1) / 2);
-            foreach (var (x, y) in parser.Walls)
+            foreach (var (x, y) in dto.Walls)
             {
                 Rectangle w = new() { Fill = new SolidColorBrush(Colors.LightGray) };
                 Grid.SetRow(w, Convert.ToInt32(p.Y - y));

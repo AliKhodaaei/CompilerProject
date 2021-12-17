@@ -8,20 +8,12 @@ namespace ProjectCore
     {
         public int line = 1, C = 0; //C : Pointer for current character to read from input
         private char peek = ' ';
-        private bool negativeFlag = false;
         private readonly Hashtable symbolTable = new();
         private readonly char[] input;
 
         public Lexer(string input)
         {
             this.input = input.ToCharArray();
-            Reserve(new Word(Tag.Lx, "lx"));
-            Reserve(new Word(Tag.Ux, "ux"));
-            Reserve(new Word(Tag.Ly, "ly"));
-            Reserve(new Word(Tag.Uy, "uy"));
-            Reserve(new Word(Tag.Ox, "ox"));
-            Reserve(new Word(Tag.Oy, "oy"));
-            Reserve(new Word(Tag.N, "n"));
             Reserve(new Word(Tag.begin, "begin"));
             Reserve(new Word(Tag.north, "north"));
             Reserve(new Word(Tag.east, "east"));
@@ -30,7 +22,7 @@ namespace ProjectCore
             Reserve(new Word(Tag.end, "end"));
         }
 
-        void Reserve(Word t) => symbolTable.Add(t.lexeme, t);
+        void Reserve(Word t) => symbolTable.Add(t.Lexeme, t);
 
         private char GetNextChar()
         {
@@ -41,7 +33,6 @@ namespace ProjectCore
 
         public Token GetToken()
         {
-            negativeFlag = false;
             for (; ; peek = GetNextChar())
             {
                 if (peek == ' ' || peek == '\t') continue;
@@ -71,23 +62,6 @@ namespace ProjectCore
                     } while (peek != '}');
                 }
                 else break;
-            }
-
-            if (peek == 45)
-            {
-                negativeFlag = true;
-                peek = GetNextChar();
-            }
-
-            if (char.IsDigit(peek))
-            {
-                int v = 0;
-                do
-                {
-                    v = v * 10 + (peek - 48);
-                    peek = GetNextChar();
-                } while (char.IsDigit(peek));
-                return new Num(negativeFlag ? -v : v);
             }
 
             if (char.IsLetter(peek))

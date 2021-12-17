@@ -10,21 +10,12 @@
         }
     }
 
-    public class Num : Token
-    {
-        public int value { get; }
-        public Num(int value) : base(Tag.num)
-        {
-            this.value = value;
-        }
-    }
-
     public class Word : Token
     {
-        public string lexeme { get; }
+        public string Lexeme { get; }
         public Word(int tag, string lexeme) : base(tag)
         {
-            this.lexeme = lexeme;
+            this.Lexeme = lexeme;
         }
     }
 }

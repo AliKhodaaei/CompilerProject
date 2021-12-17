@@ -3,15 +3,7 @@
     public static class Tag
     {
         public const int
-        Lx = 256,
-        Ly = 257,
-        Ux = 258,
-        Uy = 259,
-        Ox = 260,
-        Oy = 261,
-        N = 262,
-        num = 263,
-
+        num = 256,
 
         begin = 300,
         north = 301,
